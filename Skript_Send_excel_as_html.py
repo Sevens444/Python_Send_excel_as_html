@@ -20,6 +20,7 @@ send_to = [
 _MII_LOGIN = os.getenv('MAIL_USERNAME')
 _MII_PASSWORD = os.getenv('MAIL_PASSWORD')
 
+#%%
 '''  Чтение файлов  '''
 dir1 = r"\\S-files\КАЧЕСТВО ПРОДУКЦИИ\Отчет ТМБ Дебалансы"
 dir_Mon = dir1 + '\\' + [x for x in os.listdir(dir1) if x[:13] == 'ВСК. ТМБ. Мон'][0]
@@ -41,6 +42,7 @@ DS_Mon_Tabl = DS_Mon.iloc[5:38, 4:col_last]
 DS_Mon_Tabl.columns = DS_Mon.iloc[4, 4:col_last].to_list()
 DS_Mon_Tabl.index = DS_Mon.iloc[5:38, 3].to_list()
 
+#%%
 '''  Растворители. Формирование таблиц  '''
 for col_itog in range(5,36):
     if np.isnan(DS_Ras_TEP.iloc[8,col_itog]):
@@ -78,6 +80,7 @@ for _Tabl in [DS_Ras_TEP_Tabl, DS_Ras_SKD_Tabl, DS_Ras_DST_Tabl, DS_Ras_NoD_Tabl
         else:
             _Tabl.iloc[_row,-1] = np.nan
 
+#%%
 '''  Сохранение  '''
 with pd.ExcelWriter(dir_Tab_Deb_xl) as writer:
     DS_Mon_Tabl.to_excel(writer)
@@ -86,6 +89,7 @@ with pd.ExcelWriter(dir_Tab_Deb_xl) as writer:
     DS_Ras_DST_Tabl.to_excel(writer, startrow=74)
     DS_Ras_NoD_Tabl.to_excel(writer, startrow=89)
 
+#%%
 '''  Заливка расхождений  '''
 # Желтая заливка ячейки:  текущее < следующее значение
 # Красная заливка ячейки: текущее < следующее < последующее значение
@@ -167,6 +171,7 @@ ws.column_dimensions['A'].width = 28
 
 wb.save(dir_Tab_Deb_xl)
 
+#%%
 '''  Конвертирую всю excel книгу в html  '''
 xl = EnsureDispatch('Excel.Application')
 wb = xl.Workbooks.Open(dir_Tab_Deb_xl)
@@ -175,6 +180,7 @@ xl.Workbooks.Close()
 xl.Quit()
 del xl
 
+#%%
 '''  Формирование html таблицы  '''
 Tab_Deb_ht = open('D:\\ObraztsovNK\\book.files\\sheet001.html', 'r').read()
 Tab_Deb_cs = open('D:\\ObraztsovNK\\book.files\\stylesheet.css','r').read()
@@ -188,6 +194,7 @@ cont_tabl = '<html> <head> <style type="text/css">\n' +\
             'Красный цвет текста - если текущий процент отклонения больше предыдущего на 30 единиц<br>\n' +\
             '</p></body></html>'
 
+#%%
 '''  Отправка сообщения  '''
 msg = MIMEMultipart()
 msg['Subject'] = 'Таблица дебалансов'
@@ -203,6 +210,7 @@ server.login(_MII_LOGIN, _MII_PASSWORD)
 server.sendmail(msg['From'], send_to, msg.as_string())
 server.quit()
 
+#%%
 '''  Удаление вспомогательных файлов  '''
 os.remove("D:\\ObraztsovNK\\book.html")
 shutil.rmtree("D:\\ObraztsovNK\\book.files")
