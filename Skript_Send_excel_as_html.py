@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import shutil
 
-send_to = [
+email_send_to = [
         'Reb@vsk.sibur.ru',
         'Dul@vsk.sibur.ru',
         'Pol@vsk.sibur.ru',
@@ -22,10 +22,10 @@ _MII_PASSWORD = os.getenv('MAIL_PASSWORD')
 
 #%%
 '''  Чтение файлов  '''
-dir1 = r"\\S-files\КАЧЕСТВО ПРОДУКЦИИ\Отчет ТМБ Дебалансы"
-dir_Mon = dir1 + '\\' + [x for x in os.listdir(dir1) if x[:13] == 'ВСК. ТМБ. Мон'][0]
-dir_Ras = dir1 + '\\' + [x for x in os.listdir(dir1) if x[:12] == 'ВСК - Баланс'][0]
-dir_Tab_Deb_xl = dir1 + '\\' + 'Table debalans.xlsx'
+dir_reports = r"\\S-files\КАЧЕСТВО ПРОДУКЦИИ\Отчет ТМБ Дебалансы"
+dir_Mon = dir_reports + '\\' + [x for x in os.listdir(dir_reports) if x[:14] == 'ТМБ. Мономеры '][0]
+dir_Ras = dir_reports + '\\' + [x for x in os.listdir(dir_reports) if x[:14] == 'ТМБ. Растворит'][0]
+dir_Tab_Deb_xl = dir_reports + '\\' + 'Table debalans.xlsx'
 
 DS_Mon = pd.read_excel(dir_Mon, sheet_name='Динамика дебалансов', header=None)
 DS_Ras_TEP = pd.read_excel(dir_Ras, sheet_name='Динамика дебалансов Т', header=None)
@@ -199,7 +199,7 @@ cont_tabl = '<html> <head> <style type="text/css">\n' +\
 msg = MIMEMultipart()
 msg['Subject'] = 'Таблица дебалансов'
 msg['From'] = 'rprt@vsk.sibur.ru'
-msg['To'] = ", ".join(send_to)
+msg['To'] = ", ".join(email_send_to)
 msg.attach(MIMEText(cont_tabl, 'html'))
 
 server = smtplib.SMTP('smtp.sibur.local', port=465)
